@@ -1,214 +1,325 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8">
 <title>Core Web Vitals Report</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;padding:24px}
+body{font-family:system-ui,sans-serif;background:#0f172a;color:#e2e8f0;padding:24px;margin:0}
 .wrap{max-width:1100px;margin:0 auto}
-h1{font-size:22px;font-weight:800;color:#f8fafc}
-.sub{color:#94a3b8;font-size:13px;margin-top:4px}
-.card{background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin:18px 0}
-.lbl{font-size:12px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px}
-input[type=password]{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:8px 12px;color:#e2e8f0;font-size:13px;outline:none}
-.sb{display:inline-block;padding:7px 16px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-weight:600;font-size:13px;cursor:pointer;margin-right:8px}
-.sb.on{border-color:#3b82f6;background:#1d4ed8;color:#fff}
-#pb{background:#1e293b;border-radius:8px;height:8px;margin-bottom:20px;display:none}
+h1{font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:4px}
+.sub{color:#94a3b8;font-size:13px;margin-bottom:18px}
+.card{background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:18px}
+.lbl{font-size:12px;color:#64748b;font-weight:600;text-transform:uppercase;display:block;margin-bottom:8px}
+input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:8px 12px;color:#e2e8f0;font-size:13px;outline:none;box-sizing:border-box}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+button{padding:9px 20px;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer}
+.b-blue{background:#3b82f6;color:#fff}
+.b-red{background:#ef4444;color:#fff}
+.b-amber{background:#f59e0b;color:#000}
+.b-gray{background:#334155;color:#94a3b8}
+.sb{padding:7px 14px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:13px;cursor:pointer;font-weight:600}
+.sb.on{background:#1d4ed8;border-color:#3b82f6;color:#fff}
+#pb{background:#1e293b;border-radius:8px;height:8px;margin-bottom:14px;display:none}
 #pf{background:#3b82f6;height:8px;border-radius:8px;width:0;transition:width .3s}
-#st{font-size:13px;margin-bottom:12px;display:none;padding:10px 14px;border-radius:8px}
+#msg{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none}
 .ok{background:#14532d33;border:1px solid #16a34a55;color:#4ade80}
 .warn{background:#78350f33;border:1px solid #d9770655;color:#fbbf24}
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px}
-.sc{background:#1e293b;border-radius:10px;padding:14px 16px}
-.sv{font-size:22px;font-weight:800}.sl{font-size:11px;color:#64748b;margin-top:2px}
-.fs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.fb{display:inline-block;padding:5px 13px;border-radius:20px;border:1px solid #334155;cursor:pointer;font-size:12px;font-weight:600;background:#1e293b;color:#94a3b8}
-.fb.on{background:#3b82f6;color:#fff}
-.tabs{display:flex;gap:4px;border-bottom:1px solid #1e293b;margin-bottom:16px}
-.tab{display:inline-block;padding:8px 20px;border-radius:8px 8px 0 0;background:#1e293b;color:#64748b;font-weight:700;font-size:13px;cursor:pointer;border-bottom:2px solid transparent}
+#lbl{font-size:13px;color:#94a3b8}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px}
+.sc{background:#1e293b;border-radius:8px;padding:12px;border:1px solid #334155}
+.sv{font-size:20px;font-weight:800}
+.sl{font-size:11px;color:#64748b;margin-top:2px}
+.fs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.fb{padding:5px 12px;border-radius:20px;border:1px solid #334155;font-size:12px;font-weight:600;background:#1e293b;color:#94a3b8;cursor:pointer}
+.fb.on{background:#3b82f6;color:#fff;border-color:#3b82f6}
+.tabs{display:flex;gap:4px;border-bottom:1px solid #334155;margin-bottom:14px}
+.tab{padding:7px 18px;border-radius:8px 8px 0 0;background:#1e293b;color:#64748b;font-weight:700;font-size:13px;cursor:pointer;border-bottom:2px solid transparent}
 .tab.on{background:#1e40af;color:#fff;border-bottom-color:#3b82f6}
+.tw{overflow-x:auto;border-radius:10px;border:1px solid #1e293b}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{padding:10px 12px;text-align:left;color:#64748b;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:1px solid #334155;background:#1e293b}
-tr:nth-child(even){background:#111827}tr:nth-child(odd){background:#0f172a}
-td{padding:9px 12px;border-bottom:1px solid #1e293b;white-space:nowrap}
-.sn{font-weight:600;color:#f1f5f9;max-width:200px;overflow:hidden;text-overflow:ellipsis;display:block}
-.su{font-size:11px;color:#475569;max-width:200px;overflow:hidden;text-overflow:ellipsis;display:block}
-.bd{display:inline-block;min-width:38px;padding:2px 7px;border-radius:12px;font-weight:700;font-size:13px;text-align:center}
-.tw{overflow-x:auto;border-radius:12px;border:1px solid #1e293b}
-#ctl{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-#scanLbl{font-size:13px;color:#94a3b8}
-#emp{text-align:center;padding:50px 0;color:#475569}
-.btn{display:inline-block;border-radius:8px;font-weight:700;font-size:13px;padding:9px 20px;margin-right:8px;cursor:pointer}
-.btn-blue{background:#3b82f6;color:#fff}.btn-red{background:#ef4444;color:#fff}
-.btn-amber{background:#f59e0b;color:#000}.btn-gray{background:#334155;color:#94a3b8}
+th{padding:10px 12px;text-align:left;color:#64748b;font-weight:600;cursor:pointer;border-bottom:1px solid #334155;background:#1e293b;white-space:nowrap}
+tr:nth-child(even){background:#111827}
+tr:nth-child(odd){background:#0f172a}
+td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
+.sn{font-weight:600;color:#f1f5f9;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
+.su{font-size:11px;color:#475569;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
+.bd{display:inline-block;min-width:36px;padding:2px 6px;border-radius:10px;font-weight:700;font-size:12px;text-align:center}
+#emp{text-align:center;padding:50px 0;color:#475569;display:block}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>&#9889; Core Web Vitals Report</h1>
-<p class="sub">113 Duda websites &middot; Google PageSpeed Insights</p>
+<h1>Core Web Vitals Report</h1>
+<p class="sub">113 Duda websites - Google PageSpeed Insights</p>
+
 <div class="card">
-<span class="lbl">&#128273; Google PSI API Key</span>
-<input type="password" id="apiKey" placeholder="Paste your Google API key here"/>
-<div style="margin-top:6px;font-size:11px;color:#475569">Sent only to Google via n8n - never stored.</div>
+<span class="lbl">Google PSI API Key</span>
+<input type="password" id="k" placeholder="Paste your Google API key here">
+<p style="font-size:11px;color:#475569;margin-top:6px">Sent only to Google via n8n - never stored.</p>
 </div>
+
 <div class="card">
 <span class="lbl">Strategy</span>
-<span class="sb on" data-s="mobile" id="sbM">Mobile</span>
-<span class="sb" data-s="desktop" id="sbD">Desktop</span>
-<span class="sb" data-s="both" id="sbB">Both</span>
+<div class="row" style="margin-bottom:0">
+<button class="sb on" id="s-mobile">Mobile</button>
+<button class="sb" id="s-desktop">Desktop</button>
+<button class="sb" id="s-both">Both</button>
 </div>
-<div id="ctl">
-<span class="btn btn-blue" id="runBtn">Run Analysis</span>
-<span class="btn btn-amber" id="resBtn" style="display:none">Resume</span>
-<span class="btn btn-red" id="stopBtn" style="display:none">Stop</span>
-<span class="btn btn-gray" id="csvBtn" style="display:none">Export CSV</span>
-<span id="scanLbl"></span>
 </div>
+
+<div class="row">
+<button class="b-blue" id="btn-run">Run Analysis</button>
+<button class="b-amber" id="btn-res" style="display:none">Resume</button>
+<button class="b-red" id="btn-stop" style="display:none">Stop</button>
+<button class="b-gray" id="btn-csv" style="display:none">Export CSV</button>
+<span id="lbl"></span>
+</div>
+
 <div id="pb"><div id="pf"></div></div>
-<div id="st"></div>
+<div id="msg"></div>
+
 <div id="tabs" class="tabs" style="display:none">
-<span class="tab on" id="tabM">Mobile</span>
-<span class="tab" id="tabD">Desktop</span>
+<div class="tab on" id="tab-m">Mobile</div>
+<div class="tab" id="tab-d">Desktop</div>
 </div>
-<div id="sumWrap" style="display:none">
+
+<div id="sum" style="display:none">
 <div class="sg" id="sg"></div>
-<div class="fs">
-<span class="fb on" data-f="all">All</span>
-<span class="fb" data-f="good">Good</span>
-<span class="fb" data-f="needs">Needs Work</span>
-<span class="fb" data-f="poor">Poor</span>
-<span class="fb" data-f="err">No Data</span>
+<div class="fs" id="fs">
+<button class="fb on" id="f-all">All</button>
+<button class="fb" id="f-good">Good</button>
+<button class="fb" id="f-needs">Needs Work</button>
+<button class="fb" id="f-poor">Poor</button>
+<button class="fb" id="f-err">No Data</button>
 </div>
 </div>
-<div id="tblWrap" class="tw" style="display:none">
-<table><thead><tr>
-<th data-k="name">Site</th>
-<th data-k="performance">Score</th>
-<th data-k="lcp">LCP</th>
-<th data-k="cls">CLS</th>
-<th data-k="fcp">FCP</th>
-<th data-k="tbt">TBT</th>
-<th data-k="si">Speed Index</th>
-</tr></thead><tbody id="tbody"></tbody></table>
+
+<div id="tw" class="tw" style="display:none">
+<table>
+<thead><tr>
+<th id="h-name">Site</th>
+<th id="h-performance">Score</th>
+<th id="h-lcp">LCP</th>
+<th id="h-cls">CLS</th>
+<th id="h-fcp">FCP</th>
+<th id="h-tbt">TBT</th>
+<th id="h-si">Speed Index</th>
+</tr></thead>
+<tbody id="tb"></tbody>
+</table>
 </div>
+
 <div id="emp">
-<div style="font-size:40px;margin-bottom:12px">&#128202;</div>
+<div style="font-size:38px;margin-bottom:10px">Chart</div>
 <div style="font-size:15px;font-weight:600">Ready to scan 113 websites</div>
 <div style="font-size:13px;margin-top:6px">Paste your API key above and click Run Analysis</div>
 </div>
 </div>
+
 <script>
 var SITES=[{name:"Sticks & Stones Cabinet & Granite",url:"https://www.saltlakecitycabinetry.com"},{name:"The Local Plumber",url:"https://www.thelocalplumber.com"},{name:"Frontier Aircon",url:"https://www.frontieraircon.com"},{name:"Blinds by Design",url:"https://www.tampablindsbydesign.com"},{name:"First Class Realty",url:"https://www.1classrealty.com"},{name:"First Class Property Mgmt",url:"https://www.1classproperties.com"},{name:"5 Star Texas Roofing",url:"https://www.5startexasroofing.com"},{name:"Aim High Detailing",url:"https://www.aimhighdetailing.com"},{name:"Bayou State Moving",url:"https://www.bayoustatemoving.com"},{name:"CJ's Landscaping",url:"https://www.landscapeofbrainerd.com"},{name:"RenewConstruction LLC",url:"https://www.newconstructionnm.com"},{name:"Caudle's Tree Service",url:"https://www.caudletreeservice.com"},{name:"J&M Plumbing Inc",url:"https://www.jmplumbersinc.com"},{name:"Vito's Express",url:"https://www.vitosexpress.com"},{name:"Total Package Landscape Works",url:"https://www.totalpackagelandscapeworksllc.com"},{name:"Capri Wash LLC",url:"https://www.capri-wash.com"},{name:"BAG Remodelers",url:"https://www.bagremodelers.com"},{name:"Fisher Home Inspections",url:"https://www.fisherhomeinspectionsllc.com"},{name:"Pat Doll Automotive",url:"https://www.patdollautomotivewi.com"},{name:"The Sign Solution",url:"https://www.thesignsolution.net"},{name:"Finish Line Auto & Tire",url:"https://www.finishlineautotire.com"},{name:"Mike and Mike Roofing",url:"https://www.mikeandmikeroofing.com"},{name:"Max Press Foundation Repair",url:"https://www.maxpressfoundationrepair.com"},{name:"Painting by Pros",url:"https://www.paintingbypros.com"},{name:"All Bright Cleaning Midwest",url:"https://www.allbrightcleaningkc.com"},{name:"R&S Electric Services",url:"https://www.rselectricms.com"},{name:"Ancient City Garage Doors",url:"https://www.ancientcitygaragedoors.com"},{name:"Total Comfort Cleaners",url:"https://www.totalcomfortcleaners.com"},{name:"BE Roofing LLC",url:"https://www.beroofingllc.com"},{name:"Camo Construction LLC",url:"https://www.camoconstructionllc.com"},{name:"Custom Elite Detail Car Wash",url:"https://www.customelitedetailcarwash.com"},{name:"A-Wash Window Cleaning",url:"https://www.awashcleaning.com"},{name:"Roettger Welding LLC",url:"https://www.roettgerwelding.com"},{name:"Firefly Landscape Contractors",url:"https://www.fireflycontractor.com"},{name:"Tropic Glass Enclosures",url:"https://www.tropicglassenclosuresfl.com"},{name:"Trident Construction",url:"https://www.tridentconstructiongp.com"},{name:"Larry's Auto Electric",url:"https://www.larrysae.com"},{name:"Hope Landscaping LLC",url:"https://www.hopelandscaping.com"},{name:"Easy Out Collision Center",url:"https://www.ezoutcollisioncenter.com"},{name:"Frank Soares Construction",url:"https://www.franksoaresconstruction.com"},{name:"FND Contracting",url:"https://www.fndcontracting.com"},{name:"The Wood Shop",url:"https://www.thewooodshop.com"},{name:"Dynamo Home Improvements",url:"https://www.dynamohi.com"},{name:"Andrew Smith HVAC",url:"https://www.smithhvacservices.com"},{name:"Sweet Mountain Air",url:"https://www.sweetmountainair.co"},{name:"Al's Well Drilling",url:"https://www.alswelldrilling.com"},{name:"Dan Rand and Associates",url:"https://www.danrandandassoc.com"},{name:"Raffoul Heating and Air",url:"https://www.raffoulheatingandair.com"},{name:"Your Family Salon",url:"https://www.yourfamilysalon.com"},{name:"Custom Outdoor Solutions NY",url:"https://www.customoutdoorsolutionsny.com"},{name:"D. Barrett Services",url:"https://www.dbarrsvcs.com"},{name:"Riverstone Construction",url:"https://www.rsccontracting.org"},{name:"Economy Siding and Windows",url:"https://www.economysidingtn.com"},{name:"BHS Mobile & Shop Welding",url:"https://www.bhswelding.com"},{name:"Wire Guys",url:"https://www.wireguys.com"},{name:"Powell Pest Control",url:"https://www.powellpestcontrol.net"},{name:"A Skyline Communications",url:"https://www.askyline.com"},{name:"Hogie's Construction",url:"https://www.hogiesconstruction.com"},{name:"Black Dog Renovation & Repair",url:"https://www.blackdogrr.com"},{name:"Apex Gutters LLC",url:"https://www.apexgutters.com"},{name:"Furniture Fixxers",url:"https://www.furniturefixxers.com"},{name:"Anteaters Pest Control",url:"https://www.anteaterspestcontrol.net"},{name:"Mobs Floor Care",url:"https://www.mobsfloorcare.com"},{name:"Wenniger Compressor Co",url:"https://www.wennigercompressor.com"},{name:"KC Auto Service Center",url:"https://www.kcservicecenterpa.com"},{name:"Gorman & Sons Landscaping",url:"https://www.gormanandsonslandscaping.com"},{name:"All Kids Are Special",url:"https://www.allkidsarespecial.net"},{name:"Rolando Roofing",url:"https://www.rolandoroofing.net"},{name:"Premier Water Heaters",url:"https://www.premierwaterheaters.net"},{name:"Nick's Electrical Contracting",url:"https://www.necelectrical-inc.com"},{name:"Storm Pros VA",url:"https://www.stormprosva.com"},{name:"808 Towing",url:"https://www.808towing.com"},{name:"J&B Tree Service",url:"https://www.jandbtreeservice.net"},{name:"Lake Hamilton Appraisal",url:"https://www.lakehamiltonappraisals.com"},{name:"Campbell Huitt Insurance",url:"https://www.campbellhuitt.com"},{name:"Ochoa Electric",url:"https://www.ochoaelectricsandiego.com"},{name:"Goodly Growth",url:"https://www.goodlygrowth.com"},{name:"Boyle Heating & Cooling",url:"https://boyleheatingandcooling.com"},{name:"Zulauf Construction",url:"https://www.zulaufconstruction.com"},{name:"ASAP Containers",url:"https://www.asapcontainers.com"},{name:"MTCC Pressure Washing",url:"https://www.mtccpressurewashing.com"},{name:"5 Points Landscaping",url:"https://www.5pointslandscaping.com"},{name:"Problem Tree",url:"https://www.problemtree.com"},{name:"J&P Bike Shop",url:"https://www.jandpbikeshop.com"},{name:"Angela Browder Home Care",url:"https://www.angelabrowderhomecare.com"},{name:"Bulldog Moving",url:"https://www.bulldogmovingclt.com"},{name:"Advanced Alarm Lock",url:"https://www.advancedalarmlock.com"},{name:"The Spring King",url:"https://www.thespringking.net"},{name:"Amish Stone Firepits",url:"https://www.amishstonefirepits.com"},{name:"Ter Septic",url:"https://www.terseptic.com"},{name:"Thomas McCann Law",url:"https://www.thomasmccannlaw.com"},{name:"CC Electric",url:"https://www.ccelectricbcs.com"},{name:"Kyle's Excavating",url:"https://kylesexcavatingandwatermanagementsolutions.goodlygrowth.com"},{name:"NMWC Attorneys",url:"https://www.nmwcattorneys.com"},{name:"Noat Outdoor Living",url:"https://www.noatoutdoorliving.com"},{name:"Pacific Garage Repair",url:"https://www.pacificgaragerepair.com"},{name:"Hans Moto Sports",url:"https://www.hansmotosports.com"},{name:"Affordable Rooter",url:"https://www.affordablerooter.com"},{name:"Harvey Sarles Insurance",url:"https://www.harveysarlesinsurance.com"},{name:"Greenbush Professional Services",url:"https://www.greenbushpros.com"},{name:"MEV Outdoor",url:"https://www.mevoutdoor.com"},{name:"Spindle Dynamics Axle Repair",url:"https://www.spindledynamicsaxlerepair.com"},{name:"Longs Pest",url:"https://www.longspest.com"},{name:"Foothills Machining Inc",url:"https://www.foothillsmachininginc.com"},{name:"Fraser Plumbing Inc",url:"https://www.fraserplumbingarkansas.com"},{name:"In the Mix ADC",url:"https://www.inthemix-adc.com"},{name:"Sexton Repairs",url:"https://www.sexton-repairs.com"},{name:"Shult Architect",url:"https://www.shultarchitect.com"},{name:"Drain Rooter Plumbing SD",url:"https://www.drainrooterplumbingsd.com"},{name:"EOC ATX",url:"https://www.eocatx.com"},{name:"Glass Impressions LV",url:"https://www.glassimpressionslv.com"},{name:"Modelco Electric",url:"https://www.modelcoelectric.com"},{name:"Conveyor-Tek",url:"https://www.conveyor-tek.com"}];
+
 var N8N="https://goodly.app.n8n.cloud/webhook/psi-proxy";
 var R={mobile:[],desktop:[]},SC={mobile:{},desktop:{}};
 var strat="mobile",tab="mobile",stopped=false,sk="performance",sd="asc",sf="all";
+
 function g(id){return document.getElementById(id)}
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
-function col(s){if(s==null)return"#9ca3af";if(s>=90)return"#22c55e";if(s>=50)return"#f59e0b";return"#ef4444"}
-function lbl(s){if(s==null)return"";if(s>=90)return"Good";if(s>=50)return"Needs Work";return"Poor"}
-function fetch1(s,st){
-var key=g("apiKey").value.trim();
-var u=N8N+"?url="+encodeURIComponent(s.url)+"&strategy="+st+"&key="+encodeURIComponent(key);
-return fetch(u).then(function(r){return r.json()}).then(function(d){
-return{name:s.name,url:s.url,performance:d.performance!=null?d.performance:null,lcp:d.lcp||null,cls:d.cls||null,fcp:d.fcp||null,tbt:d.tbt||null,si:d.si||null};
-}).catch(function(){return{name:s.name,url:s.url,performance:null,lcp:null,cls:null,fcp:null,tbt:null,si:null}})
+function col(s){return s==null?"#9ca3af":s>=90?"#22c55e":s>=50?"#f59e0b":"#ef4444"}
+function rating(s){return s==null?"":s>=90?"Good":s>=50?"Needs Work":"Poor"}
+
+function setStrat(s){
+  strat=s;
+  tab=s==="desktop"?"desktop":"mobile";
+  ["mobile","desktop","both"].forEach(function(x){
+    g("s-"+x).classList.toggle("on",x===s);
+  });
 }
+
+function setTab(t){
+  tab=t;
+  g("tab-m").classList.toggle("on",t==="mobile");
+  g("tab-d").classList.toggle("on",t==="desktop");
+  redraw();
+}
+
+function setFilter(f){
+  sf=f;
+  ["all","good","needs","poor","err"].forEach(function(x){
+    g("f-"+x).classList.toggle("on",x===f);
+  });
+  renderTable();
+}
+
+function setSort(k){
+  if(sk===k)sd=sd==="asc"?"desc":"asc";
+  else{sk=k;sd="asc";}
+  renderTable();
+}
+
+function fetchSite(site,st){
+  var key=g("k").value.trim();
+  var url=N8N+"?url="+encodeURIComponent(site.url)+"&strategy="+st+"&key="+encodeURIComponent(key);
+  return fetch(url).then(function(r){return r.json()}).then(function(d){
+    return{name:site.name,url:site.url,performance:d.performance!=null?d.performance:null,lcp:d.lcp||null,cls:d.cls||null,fcp:d.fcp||null,tbt:d.tbt||null,si:d.si||null};
+  }).catch(function(){
+    return{name:site.name,url:site.url,performance:null,lcp:null,cls:null,fcp:null,tbt:null,si:null};
+  });
+}
+
 function go(resume){
-var key=g("apiKey").value.trim();
-if(!key){alert("Please paste your Google API key first.");return}
-stopped=false;
-if(!resume){R={mobile:[],desktop:[]};SC={mobile:{},desktop:{}};}
-else{R.mobile.forEach(function(r){SC.mobile[r.url]=1});R.desktop.forEach(function(r){SC.desktop[r.url]=1})}
-var sts=strat==="both"?["mobile","desktop"]:[strat];
-var tot=sts.length*SITES.length;
-g("runBtn").style.display="none";g("resBtn").style.display="none";
-g("stopBtn").style.display="inline-block";g("pb").style.display="block";
-g("st").style.display="none";g("emp").style.display="none";
-var p=Promise.resolve();
-sts.forEach(function(st){
-var pend=SITES.filter(function(s){return!SC[st][s.url]});
-pend.forEach(function(site,i){
-p=p.then(function(){
-if(stopped)return Promise.resolve();
-var done=Object.keys(SC.mobile).length+Object.keys(SC.desktop).length;
-g("scanLbl").textContent="Scanning "+done+"/"+tot+" ["+st+"] "+site.name;
-g("pf").style.width=(done/tot*100)+"%";
-return fetch1(site,st).then(function(r){
-R[st].push(r);SC[st][r.url]=1;draw();
-if(i<pend.length-1)return sleep(500);
-return Promise.resolve();
-});
-});
-});
-});
-p.then(function(){
-var done=Object.keys(SC.mobile).length+Object.keys(SC.desktop).length;
-g("stopBtn").style.display="none";g("runBtn").style.display="inline-block";
-g("scanLbl").textContent="";g("pf").style.width=(done/tot*100)+"%";
-var el=g("st");
-if(done<tot&&!stopped){el.className="warn";el.textContent="Ended early ("+done+"/"+tot+"). Click Resume.";g("resBtn").style.display="inline-block"}
-else if(!stopped){el.className="ok";el.textContent="Complete - "+done+" results."}
-el.style.display="block";g("csvBtn").style.display="inline-block";
-});
+  var key=g("k").value.trim();
+  if(!key){alert("Please paste your Google API key first.");return;}
+  stopped=false;
+  if(!resume){R={mobile:[],desktop:[]};SC={mobile:{},desktop:{}};}
+  else{
+    R.mobile.forEach(function(r){SC.mobile[r.url]=1});
+    R.desktop.forEach(function(r){SC.desktop[r.url]=1});
+  }
+  var sts=strat==="both"?["mobile","desktop"]:[strat];
+  var tot=sts.length*SITES.length;
+  g("btn-run").style.display="none";
+  g("btn-res").style.display="none";
+  g("btn-stop").style.display="inline-block";
+  g("pb").style.display="block";
+  g("msg").style.display="none";
+  g("emp").style.display="none";
+  var p=Promise.resolve();
+  sts.forEach(function(st){
+    var pend=SITES.filter(function(s){return!SC[st][s.url]});
+    pend.forEach(function(site,i){
+      p=p.then(function(){
+        if(stopped)return;
+        var done=Object.keys(SC.mobile).length+Object.keys(SC.desktop).length;
+        g("lbl").textContent="Scanning "+done+"/"+tot+" ["+st+"] "+site.name;
+        g("pf").style.width=(done/tot*100)+"%";
+        return fetchSite(site,st).then(function(r){
+          R[st].push(r);SC[st][r.url]=1;
+          redraw();
+          if(i<pend.length-1)return sleep(500);
+        });
+      });
+    });
+  });
+  p.then(function(){
+    var done=Object.keys(SC.mobile).length+Object.keys(SC.desktop).length;
+    g("btn-stop").style.display="none";
+    g("btn-run").style.display="inline-block";
+    g("lbl").textContent="";
+    g("pf").style.width=(done/tot*100)+"%";
+    var m=g("msg");
+    if(done<tot&&!stopped){
+      m.className="warn";
+      m.textContent="Ended early ("+done+"/"+tot+"). Click Resume to continue.";
+      g("btn-res").style.display="inline-block";
+    }else if(!stopped){
+      m.className="ok";
+      m.textContent="Complete - "+done+" results.";
+    }
+    m.style.display="block";
+    g("btn-csv").style.display="inline-block";
+  });
 }
-function draw(){
-g("tabs").style.display=strat==="both"?"flex":"none";
-g("tabM").textContent="Mobile ("+R.mobile.length+")";
-g("tabD").textContent="Desktop ("+R.desktop.length+")";
-drawS();drawT();g("tblWrap").style.display="block";g("sumWrap").style.display="block";
+
+function redraw(){
+  g("tabs").style.display=strat==="both"?"flex":"none";
+  g("tab-m").textContent="Mobile ("+R.mobile.length+")";
+  g("tab-d").textContent="Desktop ("+R.desktop.length+")";
+  renderSummary();
+  renderTable();
+  g("tw").style.display="block";
+  g("sum").style.display="block";
 }
-function drawS(){
-var r=R[tab]||[];
-var good=r.filter(function(x){return x.performance>=90}).length;
-var needs=r.filter(function(x){return x.performance>=50&&x.performance<90}).length;
-var poor=r.filter(function(x){return x.performance!=null&&x.performance<50}).length;
-var errs=r.filter(function(x){return x.performance==null}).length;
-var valid=r.filter(function(x){return x.performance!=null});
-var avg=valid.length?Math.round(valid.reduce(function(s,x){return s+x.performance},0)/valid.length):null;
-g("sg").innerHTML=[{l:"Avg Score",v:avg!=null?avg:"--",c:col(avg)},{l:"Good (90+)",v:good,c:"#22c55e"},{l:"Needs Work",v:needs,c:"#f59e0b"},{l:"Poor (<50)",v:poor,c:"#ef4444"},{l:"No Data",v:errs,c:"#9ca3af"},{l:"Scanned",v:r.length+"/"+SITES.length,c:"#60a5fa"}].map(function(x){return'<div class="sc" style="border:1px solid '+x.c+'33"><div class="sv" style="color:'+x.c+'">'+x.v+'</div><div class="sl">'+x.l+'</div></div>'}).join("");
+
+function renderSummary(){
+  var r=R[tab]||[];
+  var good=r.filter(function(x){return x.performance>=90}).length;
+  var needs=r.filter(function(x){return x.performance>=50&&x.performance<90}).length;
+  var poor=r.filter(function(x){return x.performance!=null&&x.performance<50}).length;
+  var errs=r.filter(function(x){return x.performance==null}).length;
+  var valid=r.filter(function(x){return x.performance!=null});
+  var avg=valid.length?Math.round(valid.reduce(function(a,x){return a+x.performance},0)/valid.length):null;
+  g("sg").innerHTML=[
+    {l:"Avg Score",v:avg!=null?avg:"--",c:col(avg)},
+    {l:"Good (90+)",v:good,c:"#22c55e"},
+    {l:"Needs Work",v:needs,c:"#f59e0b"},
+    {l:"Poor (<50)",v:poor,c:"#ef4444"},
+    {l:"No Data",v:errs,c:"#9ca3af"},
+    {l:"Scanned",v:r.length+"/113",c:"#60a5fa"}
+  ].map(function(x){
+    return'<div class="sc" style="border:1px solid '+x.c+'33"><div class="sv" style="color:'+x.c+'">'+x.v+'</div><div class="sl">'+x.l+'</div></div>';
+  }).join("");
 }
-function drawT(){
-var rows=(R[tab]||[]).filter(function(x){
-if(sf==="good")return x.performance>=90;if(sf==="needs")return x.performance>=50&&x.performance<90;
-if(sf==="poor")return x.performance!=null&&x.performance<50;if(sf==="err")return x.performance==null;return true;
-}).sort(function(a,b){
-var av=a[sk],bv=b[sk];
-if(av==null)av=sd==="asc"?Infinity:-Infinity;if(bv==null)bv=sd==="asc"?Infinity:-Infinity;
-if(typeof av==="string")av=parseFloat(av)||av;if(typeof bv==="string")bv=parseFloat(bv)||bv;
-return av<bv?(sd==="asc"?-1:1):av>bv?(sd==="asc"?1:-1):0;
-});
-g("tbody").innerHTML=rows.map(function(x){
-var c=col(x.performance);
-return'<tr><td><span class="sn">'+x.name+'</span><span class="su">'+x.url.replace(/https?:///,"")+'</span></td>'
-+'<td><span class="bd" style="background:'+c+'22;color:'+c+';border:1px solid '+c+'55">'+(x.performance!=null?x.performance:"-")+'</span> <span style="font-size:11px;color:#64748b">'+lbl(x.performance)+'</span></td>'
-+'<td style="color:'+(x.lcp?"#cbd5e1":"#374151")+'">'+(x.lcp||"--")+'</td>'
-+'<td style="color:'+(x.cls?"#cbd5e1":"#374151")+'">'+(x.cls||"--")+'</td>'
-+'<td style="color:'+(x.fcp?"#cbd5e1":"#374151")+'">'+(x.fcp||"--")+'</td>'
-+'<td style="color:'+(x.tbt?"#cbd5e1":"#374151")+'">'+(x.tbt||"--")+'</td>'
-+'<td style="color:'+(x.si?"#cbd5e1":"#374151")+'">'+(x.si||"--")+'</td></tr>';
-}).join("");
+
+function renderTable(){
+  var rows=(R[tab]||[]).filter(function(x){
+    if(sf==="good")return x.performance>=90;
+    if(sf==="needs")return x.performance>=50&&x.performance<90;
+    if(sf==="poor")return x.performance!=null&&x.performance<50;
+    if(sf==="err")return x.performance==null;
+    return true;
+  }).sort(function(a,b){
+    var av=a[sk],bv=b[sk];
+    if(av==null)av=sd==="asc"?Infinity:-Infinity;
+    if(bv==null)bv=sd==="asc"?Infinity:-Infinity;
+    if(typeof av==="string")av=parseFloat(av)||av;
+    if(typeof bv==="string")bv=parseFloat(bv)||bv;
+    return av<bv?(sd==="asc"?-1:1):av>bv?(sd==="asc"?1:-1):0;
+  });
+  g("tb").innerHTML=rows.map(function(x){
+    var c=col(x.performance);
+    return"<tr>"
+      +"<td><span class='sn'>"+x.name+"</span><span class='su'>"+x.url.replace(/https?:///,"")+"</span></td>"
+      +"<td><span class='bd' style='background:"+c+"22;color:"+c+";border:1px solid "+c+"55'>"+(x.performance!=null?x.performance:"-")+"</span> <span style='font-size:11px;color:#64748b'>"+rating(x.performance)+"</span></td>"
+      +"<td style='color:"+(x.lcp?"#cbd5e1":"#374151")+";'>"+(x.lcp||"--")+"</td>"
+      +"<td style='color:"+(x.cls?"#cbd5e1":"#374151")+";'>"+(x.cls||"--")+"</td>"
+      +"<td style='color:"+(x.fcp?"#cbd5e1":"#374151")+";'>"+(x.fcp||"--")+"</td>"
+      +"<td style='color:"+(x.tbt?"#cbd5e1":"#374151")+";'>"+(x.tbt||"--")+"</td>"
+      +"<td style='color:"+(x.si?"#cbd5e1":"#374151")+";'>"+(x.si||"--")+"</td>"
+      +"</tr>";
+  }).join("");
 }
+
 function doCSV(){
-var sts=strat==="both"?["mobile","desktop"]:[strat];
-var rows=[["Site","URL","Strategy","Performance","LCP","CLS","FCP","TBT","Speed Index"]];
-sts.forEach(function(s){(R[s]||[]).forEach(function(r){rows.push([r.name,r.url,s,r.performance!=null?r.performance:"",r.lcp||"",r.cls||"",r.fcp||"",r.tbt||"",r.si||""])})});
-var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"'}).join(",")}).join("
+  var sts=strat==="both"?["mobile","desktop"]:[strat];
+  var rows=[["Site","URL","Strategy","Performance","LCP","CLS","FCP","TBT","Speed Index"]];
+  sts.forEach(function(s){
+    (R[s]||[]).forEach(function(r){
+      rows.push([r.name,r.url,s,r.performance!=null?r.performance:"",r.lcp||"",r.cls||"",r.fcp||"",r.tbt||"",r.si||""]);
+    });
+  });
+  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"'}).join(",")}).join("
 ");
-var a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);a.download="cwv.csv";a.click();
+  var a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
+  a.download="cwv.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
-window.onload=function(){
-document.querySelectorAll(".sb").forEach(function(el){el.addEventListener("click",function(){document.querySelectorAll(".sb").forEach(function(x){x.classList.remove("on")});el.classList.add("on");strat=el.dataset.s;tab=strat==="desktop"?"desktop":"mobile"})});
-document.querySelectorAll(".fb").forEach(function(el){el.addEventListener("click",function(){document.querySelectorAll(".fb").forEach(function(x){x.classList.remove("on")});el.classList.add("on");sf=el.dataset.f;drawT()})});
-document.querySelectorAll("th[data-k]").forEach(function(el){el.addEventListener("click",function(){var k=el.dataset.k;if(sk===k)sd=sd==="asc"?"desc":"asc";else{sk=k;sd="asc";}drawT()})});
-g("tabM").addEventListener("click",function(){tab="mobile";g("tabM").classList.add("on");g("tabD").classList.remove("on");draw()});
-g("tabD").addEventListener("click",function(){tab="desktop";g("tabD").classList.add("on");g("tabM").classList.remove("on");draw()});
-g("runBtn").addEventListener("click",function(){go(false)});
-g("resBtn").addEventListener("click",function(){go(true)});
-g("stopBtn").addEventListener("click",function(){stopped=true});
-g("csvBtn").addEventListener("click",function(){doCSV()});
-};
+
+// Wire up all events directly
+g("btn-run").onclick=function(){go(false)};
+g("btn-res").onclick=function(){go(true)};
+g("btn-stop").onclick=function(){stopped=true};
+g("btn-csv").onclick=function(){doCSV()};
+g("s-mobile").onclick=function(){setStrat("mobile")};
+g("s-desktop").onclick=function(){setStrat("desktop")};
+g("s-both").onclick=function(){setStrat("both")};
+g("tab-m").onclick=function(){setTab("mobile")};
+g("tab-d").onclick=function(){setTab("desktop")};
+g("f-all").onclick=function(){setFilter("all")};
+g("f-good").onclick=function(){setFilter("good")};
+g("f-needs").onclick=function(){setFilter("needs")};
+g("f-poor").onclick=function(){setFilter("poor")};
+g("f-err").onclick=function(){setFilter("err")};
+g("h-name").onclick=function(){setSort("name")};
+g("h-performance").onclick=function(){setSort("performance")};
+g("h-lcp").onclick=function(){setSort("lcp")};
+g("h-cls").onclick=function(){setSort("cls")};
+g("h-fcp").onclick=function(){setSort("fcp")};
+g("h-tbt").onclick=function(){setSort("tbt")};
+g("h-si").onclick=function(){setSort("si")};
 </script>
 </body>
 </html>

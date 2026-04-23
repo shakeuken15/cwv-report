@@ -13,10 +13,8 @@ h1{font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:4px}
 input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;padding:8px 12px;color:#e2e8f0;font-size:13px;outline:none;box-sizing:border-box}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 button{padding:9px 20px;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer}
-.b-blue{background:#3b82f6;color:#fff}
-.b-red{background:#ef4444;color:#fff}
-.b-amber{background:#f59e0b;color:#000}
-.b-gray{background:#334155;color:#94a3b8}
+.b-blue{background:#3b82f6;color:#fff}.b-red{background:#ef4444;color:#fff}
+.b-amber{background:#f59e0b;color:#000}.b-gray{background:#334155;color:#94a3b8}
 .sb{padding:7px 14px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:13px;cursor:pointer;font-weight:600}
 .sb.on{background:#1d4ed8;border-color:#3b82f6;color:#fff}
 #pb{background:#1e293b;border-radius:8px;height:8px;margin-bottom:14px;display:none}
@@ -27,8 +25,7 @@ button{padding:9px 20px;border:none;border-radius:8px;font-weight:700;font-size:
 #lbl{font-size:13px;color:#94a3b8}
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px}
 .sc{background:#1e293b;border-radius:8px;padding:12px;border:1px solid #334155}
-.sv{font-size:20px;font-weight:800}
-.sl{font-size:11px;color:#64748b;margin-top:2px}
+.sv{font-size:20px;font-weight:800}.sl{font-size:11px;color:#64748b;margin-top:2px}
 .fs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .fb{padding:5px 12px;border-radius:20px;border:1px solid #334155;font-size:12px;font-weight:600;background:#1e293b;color:#94a3b8;cursor:pointer}
 .fb.on{background:#3b82f6;color:#fff;border-color:#3b82f6}
@@ -38,13 +35,15 @@ button{padding:9px 20px;border:none;border-radius:8px;font-weight:700;font-size:
 .tw{overflow-x:auto;border-radius:10px;border:1px solid #1e293b}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{padding:10px 12px;text-align:left;color:#64748b;font-weight:600;cursor:pointer;border-bottom:1px solid #334155;background:#1e293b;white-space:nowrap}
-tr:nth-child(even){background:#111827}
-tr:nth-child(odd){background:#0f172a}
+tr:nth-child(even){background:#111827}tr:nth-child(odd){background:#0f172a}
+tr:hover{background:#1e293b;}
 td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
-.sn{font-weight:600;color:#f1f5f9;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
-.su{font-size:11px;color:#475569;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
+.sn{font-weight:600;color:#f1f5f9;max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block}
+.su{font-size:11px;color:#475569;max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block}
 .bd{display:inline-block;min-width:36px;padding:2px 6px;border-radius:10px;font-weight:700;font-size:12px;text-align:center}
 #emp{text-align:center;padding:50px 0;color:#475569;display:block}
+#search-wrap{position:relative;margin-bottom:0}
+#search-dd{position:absolute;top:100%;left:0;right:0;background:#1e293b;border:1px solid #334155;border-radius:0 0 8px 8px;z-index:100;display:none;max-height:280px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -56,6 +55,14 @@ td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
 <span class="lbl">Google PSI API Key</span>
 <input type="password" id="k" placeholder="Paste your Google API key here">
 <p style="font-size:11px;color:#475569;margin-top:6px">Sent only to Google via n8n - never stored.</p>
+</div>
+
+<div class="card">
+<span class="lbl">Filter Sites (optional — leave blank to run all 113)</span>
+<div id="search-wrap">
+<input type="text" id="search-input" placeholder="Search by name or URL to run a single site...">
+<div id="search-dd"></div>
+</div>
 </div>
 
 <div class="card">
@@ -85,7 +92,7 @@ td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
 
 <div id="sum" style="display:none">
 <div class="sg" id="sg"></div>
-<div class="fs" id="fs">
+<div class="fs">
 <button class="fb on" id="f-all">All</button>
 <button class="fb" id="f-good">Good</button>
 <button class="fb" id="f-needs">Needs Work</button>
@@ -111,11 +118,10 @@ td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
 
 <div id="emp">
 <div style="font-size:38px;margin-bottom:10px">&#9654;</div>
-<div style="font-size:15px;font-weight:600">Ready to scan 113 websites</div>
-<div style="font-size:13px;margin-top:6px">Paste your API key above and click Run Analysis</div>
+<div style="font-size:15px;font-weight:600">Ready to scan websites</div>
+<div style="font-size:13px;margin-top:6px">Search for a site above, or leave blank to run all 113</div>
 </div>
 </div>
-
 <script src="app.js"></script>
 </body>
 </html>

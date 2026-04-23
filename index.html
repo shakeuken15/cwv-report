@@ -110,7 +110,7 @@ td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
 </div>
 
 <div id="emp">
-<div style="font-size:38px;margin-bottom:10px">Chart</div>
+<div style="font-size:38px;margin-bottom:10px">&#9654;</div>
 <div style="font-size:15px;font-weight:600">Ready to scan 113 websites</div>
 <div style="font-size:13px;margin-top:6px">Paste your API key above and click Run Analysis</div>
 </div>
@@ -123,10 +123,10 @@ var N8N="https://goodly.app.n8n.cloud/webhook/psi-proxy";
 var R={mobile:[],desktop:[]},SC={mobile:{},desktop:{}};
 var strat="mobile",tab="mobile",stopped=false,sk="performance",sd="asc",sf="all";
 
-function g(id){return document.getElementById(id)}
-function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
-function col(s){return s==null?"#9ca3af":s>=90?"#22c55e":s>=50?"#f59e0b":"#ef4444"}
-function rating(s){return s==null?"":s>=90?"Good":s>=50?"Needs Work":"Poor"}
+function g(id){return document.getElementById(id);}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function col(s){return s==null?"#9ca3af":s>=90?"#22c55e":s>=50?"#f59e0b":"#ef4444";}
+function rating(s){return s==null?"":s>=90?"Good":s>=50?"Needs Work":"Poor";}
 
 function setStrat(s){
   strat=s;
@@ -152,7 +152,7 @@ function setFilter(f){
 }
 
 function setSort(k){
-  if(sk===k)sd=sd==="asc"?"desc":"asc";
+  if(sk===k){sd=sd==="asc"?"desc":"asc";}
   else{sk=k;sd="asc";}
   renderTable();
 }
@@ -160,9 +160,34 @@ function setSort(k){
 function fetchSite(site,st){
   var key=g("k").value.trim();
   var url=N8N+"?url="+encodeURIComponent(site.url)+"&strategy="+st+"&key="+encodeURIComponent(key);
-  return fetch(url).then(function(r){return r.json()}).then(function(d){
-    return{name:site.name,url:site.url,performance:d.performance!=null?d.performance:null,lcp:d.lcp||null,cls:d.cls||null,fcp:d.fcp||null,tbt:d.tbt||null,si:d.si||null};
-  }).catch(function(){
+  return fetch(url).then(function(r){return r.json();}).then(function(d){
+    if(R[st].length<3){console.log("[PSI raw]",site.name,JSON.stringify(d));}
+    var o=Array.isArray(d)?d[0]:d;
+    var perf=o.performance!=null?o.performance
+            :o.performanceScore!=null?o.performanceScore
+            :o.score!=null?o.score
+            :null;
+    if(perf!=null&&perf<=1){perf=Math.round(perf*100);}
+    else if(perf!=null){perf=Math.round(perf);}
+    function pick(){
+      for(var i=0;i<arguments.length;i++){
+        var v=o[arguments[i]];
+        if(v!=null&&v!==""){return v;}
+      }
+      return null;
+    }
+    return{
+      name:site.name,
+      url:site.url,
+      performance:perf,
+      lcp:pick("lcp","largest_contentful_paint","LCP"),
+      cls:pick("cls","cumulative_layout_shift","CLS"),
+      fcp:pick("fcp","first_contentful_paint","FCP"),
+      tbt:pick("tbt","total_blocking_time","TBT"),
+      si:pick("si","speed_index","speedIndex","SpeedIndex")
+    };
+  }).catch(function(e){
+    console.error("[PSI error]",site.name,e);
     return{name:site.name,url:site.url,performance:null,lcp:null,cls:null,fcp:null,tbt:null,si:null};
   });
 }
@@ -173,8 +198,8 @@ function go(resume){
   stopped=false;
   if(!resume){R={mobile:[],desktop:[]};SC={mobile:{},desktop:{}};}
   else{
-    R.mobile.forEach(function(r){SC.mobile[r.url]=1});
-    R.desktop.forEach(function(r){SC.desktop[r.url]=1});
+    R.mobile.forEach(function(r){SC.mobile[r.url]=1;});
+    R.desktop.forEach(function(r){SC.desktop[r.url]=1;});
   }
   var sts=strat==="both"?["mobile","desktop"]:[strat];
   var tot=sts.length*SITES.length;
@@ -186,17 +211,17 @@ function go(resume){
   g("emp").style.display="none";
   var p=Promise.resolve();
   sts.forEach(function(st){
-    var pend=SITES.filter(function(s){return!SC[st][s.url]});
+    var pend=SITES.filter(function(s){return!SC[st][s.url];});
     pend.forEach(function(site,i){
       p=p.then(function(){
-        if(stopped)return;
+        if(stopped){return;}
         var done=Object.keys(SC.mobile).length+Object.keys(SC.desktop).length;
         g("lbl").textContent="Scanning "+done+"/"+tot+" ["+st+"] "+site.name;
         g("pf").style.width=(done/tot*100)+"%";
         return fetchSite(site,st).then(function(r){
           R[st].push(r);SC[st][r.url]=1;
           redraw();
-          if(i<pend.length-1)return sleep(500);
+          if(i<pend.length-1){return sleep(500);}
         });
       });
     });
@@ -233,12 +258,12 @@ function redraw(){
 
 function renderSummary(){
   var r=R[tab]||[];
-  var good=r.filter(function(x){return x.performance>=90}).length;
-  var needs=r.filter(function(x){return x.performance>=50&&x.performance<90}).length;
-  var poor=r.filter(function(x){return x.performance!=null&&x.performance<50}).length;
-  var errs=r.filter(function(x){return x.performance==null}).length;
-  var valid=r.filter(function(x){return x.performance!=null});
-  var avg=valid.length?Math.round(valid.reduce(function(a,x){return a+x.performance},0)/valid.length):null;
+  var good=r.filter(function(x){return x.performance>=90;}).length;
+  var needs=r.filter(function(x){return x.performance>=50&&x.performance<90;}).length;
+  var poor=r.filter(function(x){return x.performance!=null&&x.performance<50;}).length;
+  var errs=r.filter(function(x){return x.performance==null;}).length;
+  var valid=r.filter(function(x){return x.performance!=null;});
+  var avg=valid.length?Math.round(valid.reduce(function(a,x){return a+x.performance;},0)/valid.length):null;
   g("sg").innerHTML=[
     {l:"Avg Score",v:avg!=null?avg:"--",c:col(avg)},
     {l:"Good (90+)",v:good,c:"#22c55e"},
@@ -253,23 +278,24 @@ function renderSummary(){
 
 function renderTable(){
   var rows=(R[tab]||[]).filter(function(x){
-    if(sf==="good")return x.performance>=90;
-    if(sf==="needs")return x.performance>=50&&x.performance<90;
-    if(sf==="poor")return x.performance!=null&&x.performance<50;
-    if(sf==="err")return x.performance==null;
+    if(sf==="good"){return x.performance>=90;}
+    if(sf==="needs"){return x.performance>=50&&x.performance<90;}
+    if(sf==="poor"){return x.performance!=null&&x.performance<50;}
+    if(sf==="err"){return x.performance==null;}
     return true;
   }).sort(function(a,b){
     var av=a[sk],bv=b[sk];
-    if(av==null)av=sd==="asc"?Infinity:-Infinity;
-    if(bv==null)bv=sd==="asc"?Infinity:-Infinity;
-    if(typeof av==="string")av=parseFloat(av)||av;
-    if(typeof bv==="string")bv=parseFloat(bv)||bv;
+    if(av==null){av=sd==="asc"?Infinity:-Infinity;}
+    if(bv==null){bv=sd==="asc"?Infinity:-Infinity;}
+    if(typeof av==="string"){av=parseFloat(av)||av;}
+    if(typeof bv==="string"){bv=parseFloat(bv)||bv;}
     return av<bv?(sd==="asc"?-1:1):av>bv?(sd==="asc"?1:-1):0;
   });
   g("tb").innerHTML=rows.map(function(x){
     var c=col(x.performance);
-    return"<tr>"
-      +"<td><span class='sn'>"+x.name+"</span><span class='su'>"+x.url.replace(/https?:///,"")+"</span></td>"
+    var displayUrl=x.url.replace(/https?:\/\//,"");
+    return "<tr>"
+      +"<td><span class='sn'>"+x.name+"</span><span class='su'>"+displayUrl+"</span></td>"
       +"<td><span class='bd' style='background:"+c+"22;color:"+c+";border:1px solid "+c+"55'>"+(x.performance!=null?x.performance:"-")+"</span> <span style='font-size:11px;color:#64748b'>"+rating(x.performance)+"</span></td>"
       +"<td style='color:"+(x.lcp?"#cbd5e1":"#374151")+";'>"+(x.lcp||"--")+"</td>"
       +"<td style='color:"+(x.cls?"#cbd5e1":"#374151")+";'>"+(x.cls||"--")+"</td>"
@@ -288,8 +314,7 @@ function doCSV(){
       rows.push([r.name,r.url,s,r.performance!=null?r.performance:"",r.lcp||"",r.cls||"",r.fcp||"",r.tbt||"",r.si||""]);
     });
   });
-  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"'}).join(",")}).join("
-");
+  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
   var a=document.createElement("a");
   a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);
   a.download="cwv.csv";
@@ -298,28 +323,27 @@ function doCSV(){
   document.body.removeChild(a);
 }
 
-// Wire up all events directly
-g("btn-run").onclick=function(){go(false)};
-g("btn-res").onclick=function(){go(true)};
-g("btn-stop").onclick=function(){stopped=true};
-g("btn-csv").onclick=function(){doCSV()};
-g("s-mobile").onclick=function(){setStrat("mobile")};
-g("s-desktop").onclick=function(){setStrat("desktop")};
-g("s-both").onclick=function(){setStrat("both")};
-g("tab-m").onclick=function(){setTab("mobile")};
-g("tab-d").onclick=function(){setTab("desktop")};
-g("f-all").onclick=function(){setFilter("all")};
-g("f-good").onclick=function(){setFilter("good")};
-g("f-needs").onclick=function(){setFilter("needs")};
-g("f-poor").onclick=function(){setFilter("poor")};
-g("f-err").onclick=function(){setFilter("err")};
-g("h-name").onclick=function(){setSort("name")};
-g("h-performance").onclick=function(){setSort("performance")};
-g("h-lcp").onclick=function(){setSort("lcp")};
-g("h-cls").onclick=function(){setSort("cls")};
-g("h-fcp").onclick=function(){setSort("fcp")};
-g("h-tbt").onclick=function(){setSort("tbt")};
-g("h-si").onclick=function(){setSort("si")};
+g("btn-run").onclick=function(){go(false);};
+g("btn-res").onclick=function(){go(true);};
+g("btn-stop").onclick=function(){stopped=true;};
+g("btn-csv").onclick=function(){doCSV();};
+g("s-mobile").onclick=function(){setStrat("mobile");};
+g("s-desktop").onclick=function(){setStrat("desktop");};
+g("s-both").onclick=function(){setStrat("both");};
+g("tab-m").onclick=function(){setTab("mobile");};
+g("tab-d").onclick=function(){setTab("desktop");};
+g("f-all").onclick=function(){setFilter("all");};
+g("f-good").onclick=function(){setFilter("good");};
+g("f-needs").onclick=function(){setFilter("needs");};
+g("f-poor").onclick=function(){setFilter("poor");};
+g("f-err").onclick=function(){setFilter("err");};
+g("h-name").onclick=function(){setSort("name");};
+g("h-performance").onclick=function(){setSort("performance");};
+g("h-lcp").onclick=function(){setSort("lcp");};
+g("h-cls").onclick=function(){setSort("cls");};
+g("h-fcp").onclick=function(){setSort("fcp");};
+g("h-tbt").onclick=function(){setSort("tbt");};
+g("h-si").onclick=function(){setSort("si");};
 </script>
 </body>
 </html>

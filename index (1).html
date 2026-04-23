@@ -15,6 +15,7 @@ input{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;p
 button{padding:9px 20px;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer}
 .b-blue{background:#3b82f6;color:#fff}.b-red{background:#ef4444;color:#fff}
 .b-amber{background:#f59e0b;color:#000}.b-gray{background:#334155;color:#94a3b8}
+.b-green{background:#16a34a;color:#fff}
 .sb{padding:7px 14px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#94a3b8;font-size:13px;cursor:pointer;font-weight:600}
 .sb.on{background:#1d4ed8;border-color:#3b82f6;color:#fff}
 #pb{background:#1e293b;border-radius:8px;height:8px;margin-bottom:14px;display:none}
@@ -36,22 +37,35 @@ button{padding:9px 20px;border:none;border-radius:8px;font-weight:700;font-size:
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{padding:10px 12px;text-align:left;color:#64748b;font-weight:600;cursor:pointer;border-bottom:1px solid #334155;background:#1e293b;white-space:nowrap}
 tr:nth-child(even){background:#111827}tr:nth-child(odd){background:#0f172a}
+tr:hover{background:#1e293b;}
 td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
-.sn{font-weight:600;color:#f1f5f9;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
-.su{font-size:11px;color:#475569;max-width:180px;overflow:hidden;text-overflow:ellipsis;display:block}
+.sn{font-weight:600;color:#f1f5f9;max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block}
+.su{font-size:11px;color:#475569;max-width:220px;overflow:hidden;text-overflow:ellipsis;display:block}
 .bd{display:inline-block;min-width:36px;padding:2px 6px;border-radius:10px;font-weight:700;font-size:12px;text-align:center}
 #emp{text-align:center;padding:50px 0;color:#475569;display:block}
+#search-wrap{position:relative}
+#search-dd{position:absolute;top:100%;left:0;right:0;background:#1e293b;border:1px solid #334155;border-radius:0 0 8px 8px;z-index:100;display:none;max-height:280px;overflow-y:auto}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>Core Web Vitals Report</h1>
-<p class="sub">113 Duda websites - Google PageSpeed Insights</p>
+<p class="sub"><span id="site-count">113 Duda websites</span> - Google PageSpeed Insights</p>
+
 <div class="card">
 <span class="lbl">Google PSI API Key</span>
 <input type="password" id="k" placeholder="Paste your Google API key here">
 <p style="font-size:11px;color:#475569;margin-top:6px">Sent only to Google via n8n - never stored.</p>
 </div>
+
+<div class="card">
+<span class="lbl">Filter Sites (optional — leave blank to run all)</span>
+<div id="search-wrap">
+<input type="text" id="search-input" placeholder="Search by name or URL...">
+<div id="search-dd"></div>
+</div>
+</div>
+
 <div class="card">
 <span class="lbl">Strategy</span>
 <div class="row" style="margin-bottom:0">
@@ -60,22 +74,27 @@ td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
 <button class="sb" id="s-both">Both</button>
 </div>
 </div>
+
 <div class="row">
 <button class="b-blue" id="btn-run">Run Analysis</button>
 <button class="b-amber" id="btn-res" style="display:none">Resume</button>
 <button class="b-red" id="btn-stop" style="display:none">Stop</button>
 <button class="b-gray" id="btn-csv" style="display:none">Export CSV</button>
+<button class="b-green" id="btn-add">+ Add Website</button>
 <span id="lbl"></span>
 </div>
+
 <div id="pb"><div id="pf"></div></div>
 <div id="msg"></div>
+
 <div id="tabs" class="tabs" style="display:none">
 <div class="tab on" id="tab-m">Mobile</div>
 <div class="tab" id="tab-d">Desktop</div>
 </div>
+
 <div id="sum" style="display:none">
 <div class="sg" id="sg"></div>
-<div class="fs" id="fs">
+<div class="fs">
 <button class="fb on" id="f-all">All</button>
 <button class="fb" id="f-good">Good</button>
 <button class="fb" id="f-needs">Needs Work</button>
@@ -83,21 +102,26 @@ td{padding:9px 12px;border-bottom:1px solid #0f172a;white-space:nowrap}
 <button class="fb" id="f-err">No Data</button>
 </div>
 </div>
+
 <div id="tw" class="tw" style="display:none">
 <table>
 <thead><tr>
-<th id="h-name">Site</th><th id="h-performance">Score</th>
-<th id="h-lcp">LCP</th><th id="h-cls">CLS</th>
-<th id="h-fcp">FCP</th><th id="h-tbt">TBT</th>
+<th id="h-name">Site</th>
+<th id="h-performance">Score</th>
+<th id="h-lcp">LCP</th>
+<th id="h-cls">CLS</th>
+<th id="h-fcp">FCP</th>
+<th id="h-tbt">TBT</th>
 <th id="h-si">Speed Index</th>
 </tr></thead>
 <tbody id="tb"></tbody>
 </table>
 </div>
+
 <div id="emp">
 <div style="font-size:38px;margin-bottom:10px">&#9654;</div>
-<div style="font-size:15px;font-weight:600">Ready to scan 113 websites</div>
-<div style="font-size:13px;margin-top:6px">Paste your API key above and click Run Analysis</div>
+<div style="font-size:15px;font-weight:600">Ready to scan websites</div>
+<div style="font-size:13px;margin-top:6px">Search for a site or leave blank to run all</div>
 </div>
 </div>
 <script src="app.js"></script>

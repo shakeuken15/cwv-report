@@ -161,14 +161,21 @@ function fetchSite(site,st){
   var key=g("k").value.trim();
   var url=N8N+"?url="+encodeURIComponent(site.url)+"&strategy="+st+"&key="+encodeURIComponent(key);
   return fetch(url).then(function(r){return r.json();}).then(function(d){
+    // Log the first few responses so we can see the shape
     if(R[st].length<3){console.log("[PSI raw]",site.name,JSON.stringify(d));}
+
+    // Unwrap array if n8n returns [{...}]
     var o=Array.isArray(d)?d[0]:d;
+
+    // Performance score - try common field names, handle 0-1 scale vs 0-100
     var perf=o.performance!=null?o.performance
             :o.performanceScore!=null?o.performanceScore
             :o.score!=null?o.score
             :null;
     if(perf!=null&&perf<=1){perf=Math.round(perf*100);}
     else if(perf!=null){perf=Math.round(perf);}
+
+    // Helper: pick first truthy value from list of keys
     function pick(){
       for(var i=0;i<arguments.length;i++){
         var v=o[arguments[i]];
@@ -176,6 +183,7 @@ function fetchSite(site,st){
       }
       return null;
     }
+
     return{
       name:site.name,
       url:site.url,
